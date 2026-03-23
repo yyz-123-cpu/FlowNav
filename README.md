@@ -476,34 +476,29 @@ python api_server.py --port 8000 --max-port-attempts 10
 python api_server.py --help
 ```
 
-### Windows启动脚本
+### API状态检查
 
-项目提供了Windows启动脚本 `start_api.bat`，自动处理端口占用和依赖检查：
+可以通过以下方式检查API服务器状态：
 
-```bash
-# 双击运行或命令行执行
-start_api.bat
-```
+1. **检查健康端点**：
+   ```bash
+   curl http://localhost:8000/api/health
+   ```
+   或直接在浏览器中访问：`http://localhost:8000/api/health`
 
-脚本功能：
-- 自动检查Python环境
-- 检查FastAPI依赖并自动安装
-- 检测端口8000占用，自动尝试8001-8010端口
-- 显示服务器地址和文档链接
+2. **检查可用端点**：
+   ```bash
+   curl http://localhost:8000/
+   ```
 
-### API状态检查工具
+3. **查看交互式文档**：
+   - Swagger UI: http://localhost:8000/docs
+   - ReDoc: http://localhost:8000/redoc
 
-使用 `check_api.py` 检查API服务器状态：
-
-```bash
-python check_api.py
-```
-
-工具功能：
-- 检查端口8000, 8001, 8002, 8080是否开放
-- 测试API健康状态
-- 显示服务器节点和边数信息
-- 提供故障排除建议
+4. **检查端口占用**（Windows）：
+   ```bash
+   netstat -ano | findstr :8000
+   ```
 
 服务器将在 `http://localhost:8000` 启动，并提供以下API端点：
 
@@ -527,9 +522,9 @@ python check_api.py
 **常见错误及解决方法：**
 
 1. **"无法连接到路径规划服务器"**
-   - 检查API服务器是否启动（运行 `python check_api.py`）
+   - 检查API服务器是否启动（运行 `python api_server.py` 或访问 `http://localhost:8000/api/health`）
    - 检查端口8000是否被占用（运行 `netstat -ano | findstr :8000`）
-   - 使用 `start_api.bat` 自动处理端口冲突
+   - 使用不同端口启动：`python api_server.py --port 8080`
 
 2. **"API连接失败"**
    - 确保使用正确的API地址（默认 `http://localhost:8000/api`）
@@ -539,7 +534,7 @@ python check_api.py
 3. **"端口已被占用"**
    - 停止占用端口的进程：`taskkill /PID <进程ID> /F`
    - 使用不同端口启动：`python api_server.py --port 8080`
-   - 使用启动脚本自动处理：`start_api.bat`
+   - 或尝试其他端口：`python api_server.py --port 8001 --max-port-attempts 10`
 
 4. **前端显示"api路径规划错误"**
    - 检查浏览器控制台（F12）查看详细错误信息
@@ -577,7 +572,7 @@ FlowNav 已配置为可独立运行的软件，提供多种启动方式：
 - **快捷方式创建**：支持创建桌面快捷方式（Windows/Linux/macOS）
 
 ### 详细指南
-查看 [README_SOFTWARE.md](README_SOFTWARE.md) 获取完整的软件包装使用说明。
+软件包装功能为可选高级功能，适用于将项目打包为独立可执行文件。对于常规使用，推荐使用 [公网部署方案](#公网部署方案)。
 
 ## 公网部署方案
 
@@ -667,8 +662,8 @@ ngrok http 8080
 
 如有问题或建议，请通过以下方式联系：
 
-- 项目主页：https://github.com/yourusername/flownav
-- 问题跟踪：https://github.com/yourusername/flownav/issues
+- 项目主页：https://github.com/yyz-123-cpu/FlowNav
+- 问题跟踪：https://github.com/yyz-123-cpu/FlowNav/issues
 
 ## 致谢
 

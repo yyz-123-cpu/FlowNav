@@ -137,12 +137,22 @@ python -m http.server 8080
 
 FlowNav 前端可以通过多种方式部署到公网，实现随时随地访问：
 
-### 快速部署 (ngrok)
+### 快速部署 (ngrok + nginx)
+推荐使用 ngrok + nginx 的轻量级部署方案，详细步骤请参考主 README.md 中的 [公网部署方案](../README.md#公网部署方案) 章节。
+
+简要步骤：
 ```bash
-# 1. 安装 ngrok (参考 tools/scripts/INSTALL_NGROK.md)
-# 2. 启动完整部署向导
-cd tools\scripts
-start_ngrok_full.bat
+# 1. 启动后端API服务器
+python api_server.py --port 8000
+
+# 2. 启动前端服务器
+python serve.py --port 8080
+
+# 3. 启动nginx反向代理
+nginx.exe
+
+# 4. 启动ngrok隧道
+ngrok http 8080
 ```
 
 ### 静态站点托管
@@ -150,12 +160,12 @@ start_ngrok_full.bat
 - **Vercel**: 自动HTTPS + 全球CDN
 - **Netlify**: 类似Vercel的替代方案
 
-详细部署指南: [DEPLOYMENT.md](../DEPLOYMENT.md)
+详细部署指南请参考主 README.md 中的 [公网部署方案](../README.md#公网部署方案) 章节。
 
 ### 配置说明
 部署时需要更新 `api.js` 中的 `apiBaseUrl`，指向公网可访问的后端API地址。
 
 ---
 
-**最后更新**: 2026-03-17
-**版本**: 前端原型 v1.1 (添加部署功能)
+**最后更新**: 2026-03-23
+**版本**: 前端原型 v1.2 (更新部署指南)
