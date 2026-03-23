@@ -1,0 +1,565 @@
+/* FlowNav 校园动态导航系统 - 样式文件 */
+
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --light-color: #ecf0f1;
+    --dark-color: #2c3e50;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 导航栏样式 */
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.navbar-dark.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+/* 卡片样式增强 */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    font-weight: 600;
+    padding: 18px 24px;
+    font-size: 1.1rem;
+}
+
+.card-body {
+    padding: 24px;
+}
+
+.card-title {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.card-subtitle {
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 16px;
+        border-radius: 10px;
+    }
+
+    .card-header {
+        padding: 14px 18px;
+        font-size: 1rem;
+    }
+
+    .card-body {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        margin-bottom: 12px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .card-header {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+
+    .card-body {
+        padding: 16px;
+    }
+}
+
+/* 按钮样式 */
+.btn-primary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    padding: 14px 24px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+}
+
+.btn-primary:disabled {
+    background-color: #95a5a6;
+    border-color: #95a5a6;
+    transform: none;
+    box-shadow: none;
+    opacity: 0.7;
+}
+
+.btn-outline-secondary, .btn-outline-info, .btn-outline-danger {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-secondary:hover, .btn-outline-info:hover, .btn-outline-danger:hover {
+    transform: translateY(-2px);
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+    .btn-primary {
+        padding: 12px 20px;
+        font-size: 0.95rem;
+    }
+
+    .btn-outline-secondary, .btn-outline-info, .btn-outline-danger {
+        padding: 7px 14px;
+        font-size: 0.9rem;
+    }
+}
+
+/* 表单控件样式 */
+.form-control, .form-select {
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.3rem rgba(52, 152, 219, 0.15);
+    transform: translateY(-1px);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.form-range::-webkit-slider-thumb {
+    background-color: var(--secondary-color);
+    width: 22px;
+    height: 22px;
+    margin-top: -8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.form-range::-moz-range-thumb {
+    background-color: var(--secondary-color);
+    width: 22px;
+    height: 22px;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.form-range::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 3px;
+    background-color: #e0e0e0;
+}
+
+.form-range::-moz-range-track {
+    height: 6px;
+    border-radius: 3px;
+    background-color: #e0e0e0;
+}
+
+/* 表单组间距 */
+.mb-3 {
+    margin-bottom: 1.5rem !important;
+}
+
+@media (max-width: 768px) {
+    .form-control, .form-select {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+    }
+
+    .mb-3 {
+        margin-bottom: 1.2rem !important;
+    }
+}
+
+/* 路径序列样式 */
+.path-sequence {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    min-height: 60px;
+}
+
+.badge.bg-primary {
+    background-color: var(--secondary-color) !important;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    margin: 4px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.badge.bg-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.badge.bg-primary i {
+    font-size: 0.8rem;
+    margin-left: 8px;
+    opacity: 0.8;
+}
+
+/* 路径序列中的箭头分隔符 */
+.path-sequence .separator {
+    color: #95a5a6;
+    margin: 0 5px;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 576px) {
+    .path-sequence {
+        padding: 10px;
+        justify-content: center;
+    }
+
+    .badge.bg-primary {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        margin: 3px;
+    }
+
+    .badge.bg-primary i {
+        margin-left: 5px;
+    }
+}
+
+/* 图表容器样式 */
+#chart {
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+/* 表格样式 */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.table thead th {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 15px;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+/* 响应式表格容器 */
+.table-responsive-container {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.table-responsive-container table {
+    margin-bottom: 0;
+    min-width: 600px; /* 确保表格有最小宽度 */
+}
+
+/* 小屏幕上的表格调整 */
+@media (max-width: 768px) {
+    .table-responsive-container {
+        margin-left: -15px;
+        margin-right: -15px;
+        border-radius: 0;
+    }
+
+    .table thead th,
+    .table tbody td {
+        padding: 10px 8px;
+        font-size: 0.9rem;
+    }
+
+    .table thead th {
+        white-space: nowrap;
+    }
+}
+
+/* 页脚样式 */
+.footer {
+    border-top: 1px solid #e0e0e0;
+    margin-top: 40px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .card-body {
+        padding: 18px;
+    }
+
+    .path-sequence {
+        justify-content: center;
+    }
+
+    #chart {
+        height: 400px !important;
+    }
+
+    /* 系统状态横幅在移动设备上的调整 */
+    .alert .btn {
+        margin-top: 10px;
+        display: block;
+        width: 100%;
+    }
+
+    /* 导航项间距调整 */
+    .navbar-nav .nav-item {
+        margin: 2px 0;
+    }
+
+    /* 主内容区域间距 */
+    .mt-4 {
+        margin-top: 1.5rem !important;
+    }
+
+    /* 选项卡内容内边距 */
+    .tab-content {
+        padding: 0 5px;
+    }
+
+    /* 表单组在移动设备上的排列 */
+    .input-group {
+        flex-wrap: nowrap;
+    }
+
+    .input-group .form-control {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .input-group .btn {
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-brand {
+        font-size: 1rem;
+    }
+
+    .navbar-brand i {
+        font-size: 0.9rem;
+    }
+
+    .card-header {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+
+    #chart {
+        height: 320px !important;
+    }
+
+    /* 更小的内边距 */
+    .container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    /* 页脚调整 */
+    .footer {
+        padding: 20px 0;
+    }
+
+    .footer .row > div {
+        text-align: center !important;
+        margin-bottom: 15px;
+    }
+
+    .footer .row > div:last-child {
+        margin-bottom: 0;
+    }
+
+    /* 隐藏不必要的装饰元素 */
+    .card:hover {
+        transform: none; /* 在移动设备上禁用悬停效果 */
+    }
+
+    /* 路径序列在非常小的屏幕上 */
+    .path-sequence {
+        padding: 8px;
+    }
+
+    .badge.bg-primary {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        margin: 2px;
+    }
+
+    /* 表格容器在非常小的屏幕上 */
+    .table-responsive-container {
+        margin-left: -12px;
+        margin-right: -12px;
+    }
+}
+
+/* 超小屏幕设备 */
+@media (max-width: 400px) {
+    .navbar-brand {
+        font-size: 0.9rem;
+    }
+
+    .card-header {
+        font-size: 0.9rem;
+        padding: 10px 14px;
+    }
+
+    .card-body {
+        padding: 14px;
+    }
+
+    #chart {
+        height: 280px !important;
+    }
+
+    .btn-primary {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+
+    .form-control, .form-select {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* 加载状态样式 */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--secondary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 选项卡激活状态 */
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+/* 警告和提示样式 */
+.alert {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #2980b9;
+}

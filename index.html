@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowNav - 校园动态导航系统</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <!-- Vue 3 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <!-- Axios for HTTP requests -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-map-marked-alt me-2"></i>
+                    <strong>FlowNav</strong> 校园动态导航系统
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="activeTab = 'planning'">
+                                <i class="fas fa-route me-1"></i> 路径规划
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="activeTab = 'comparison'">
+                                <i class="fas fa-balance-scale me-1"></i> 路径对比
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="activeTab = 'analysis'">
+                                <i class="fas fa-chart-line me-1"></i> 时间分析
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="activeTab = 'about'">
+                                <i class="fas fa-info-circle me-1"></i> 关于
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container mt-4">
+            <!-- System Status Banner -->
+            <div class="alert alert-info d-flex align-items-center" role="alert">
+                <i class="fas fa-info-circle me-3 fs-4"></i>
+                <div>
+                    <strong>系统状态:</strong>
+                    <span v-if="apiConnected">已连接到后端API</span>
+                    <span v-else>使用模拟数据 (演示模式)</span>
+                    <button class="btn btn-sm btn-outline-info ms-3" @click="toggleApiMode">
+                        {{ apiConnected ? '切换到模拟模式' : '尝试连接API' }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="row">
+                <!-- Left Sidebar -->
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <i class="fas fa-cog me-2"></i> 控制面板
+                        </div>
+                        <div class="card-body">
+                            <!-- Path Planning Controls -->
+                            <div v-if="activeTab === 'planning'" class="tab-content">
+                                <h5 class="card-title">路径规划参数</h5>
+
+                                <div class="mb-3">
+                                    <label class="form-label">起点</label>
+                                    <select class="form-select" v-model="startNode">
+                                        <option v-for="node in campusNodes" :value="node.id">{{ node.name }} ({{ node.id }})</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">终点</label>
+                                    <select class="form-select" v-model="goalNode">
+                                        <option v-for="node in campusNodes" :value="node.id">{{ node.name }} ({{ node.id }})</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">用户偏好权重 (α)</label>
+                                    <input type="range" class="form-range" min="0" max="2" step="0.1" v-model="alpha">
+                                    <div class="d-flex justify-content-between">
+                                        <small>0.0 (最短距离)</small>
+                                        <small>α = {{ alpha }}</small>
+                                        <small>2.0 (避开拥堵)</small>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">规划时间</label>
+                                    <div class="input-group">
+                                        <input type="datetime-local" class="form-control" v-model="planTime">
+                                        <button class="btn btn-outline-secondary" type="button" @click="setCurrentTime">
+                                            <i class="fas fa-clock"></i> 当前时间
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary w-100" @click="planPath" :disabled="isLoading">
+                                    <i class="fas fa-search me-2"></i>
+                                    <span v-if="isLoading">规划中...</span>
+                                    <span v-else>规划路径</span>
+                                </button>
+                            </div>
+
+                            <!-- Comparison Controls -->
+                            <div v-if="activeTab === 'comparison'" class="tab-content">
+                                <h5 class="card-title">路径对比参数</h5>
+
+                                <div class="mb-3">
+                                    <label class="form-label">起点</label>
+                                    <select class="form-select" v-model="compareStart">
+                                        <option v-for="node in campusNodes" :value="node.id">{{ node.name }}</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">终点</label>
+                                    <select class="form-select" v-model="compareGoal">
+                                        <option v-for="node in campusNodes" :value="node.id">{{ node.name }}</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">α值列表 (逗号分隔)</label>
+                                    <input type="text" class="form-control" v-model="alphaList" placeholder="0, 0.5, 1.0, 1.5, 2.0">
+                                </div>
+
+                                <button class="btn btn-primary w-100" @click="comparePaths" :disabled="isLoading">
+                                    <i class="fas fa-balance-scale me-2"></i>
+                                    <span v-if="isLoading">对比中...</span>
+                                    <span v-else>对比路径</span>
+                                </button>
+                            </div>
+
+                            <!-- Time Analysis Controls -->
+                            <div v-if="activeTab === 'analysis'" class="tab-content">
+                                <h5 class="card-title">时间分析参数</h5>
+
+                                <div class="mb-3">
+                                    <label class="form-label">路线</label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <select class="form-select" v-model="analysisStart">
+                                                <option v-for="node in campusNodes" :value="node.id">{{ node.name }}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-auto align-self-center">
+                                            <i class="fas fa-arrow-right"></i>
+                                        </div>
+                                        <div class="col">
+                                            <select class="form-select" v-model="analysisGoal">
+                                                <option v-for="node in campusNodes" :value="node.id">{{ node.name }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">时间点</label>
+                                    <div class="mb-2" v-for="(time, index) in analysisTimes" :key="index">
+                                        <div class="input-group">
+                                            <input type="time" class="form-control" v-model="time.time">
+                                            <button class="btn btn-outline-danger" @click="removeAnalysisTime(index)">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-outline-secondary btn-sm" @click="addAnalysisTime">
+                                        <i class="fas fa-plus"></i> 添加时间点
+                                    </button>
+                                </div>
+
+                                <button class="btn btn-primary w-100" @click="analyzeRoute" :disabled="isLoading">
+                                    <i class="fas fa-chart-line me-2"></i>
+                                    <span v-if="isLoading">分析中...</span>
+                                    <span v-else>分析路线</span>
+                                </button>
+                            </div>
+
+                            <!-- About Tab -->
+                            <div v-if="activeTab === 'about'" class="tab-content">
+                                <h5 class="card-title">关于 FlowNav</h5>
+                                <p>FlowNav 是一个针对校园微观出行场景的智能导航系统，解决了传统导航软件在"潮汐人流"场景下的"隐形拥堵"问题。</p>
+
+                                <h6>核心创新点</h6>
+                                <ul class="small">
+                                    <li><strong>时空规则引擎</strong>: 基于时间动态调整路段拥挤系数</li>
+                                    <li><strong>动态惩罚A*算法</strong>: 改进的A*算法，考虑用户偏好权重α</li>
+                                    <li><strong>轻量级设计</strong>: 避免复杂的深度学习模型，易于部署</li>
+                                </ul>
+
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-bug me-2"></i>
+                                    <strong>已知问题:</strong> 当前使用模拟数据，部分功能可能不完整。查看 <a href="bug_report.md" class="alert-link">bug报告</a>。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Main Visualization Area -->
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-chart-area me-2"></i>
+                                <span v-if="activeTab === 'planning'">路径可视化</span>
+                                <span v-if="activeTab === 'comparison'">路径对比分析</span>
+                                <span v-if="activeTab === 'analysis'">时间敏感性分析</span>
+                                <span v-if="activeTab === 'about'">系统架构图</span>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-light" @click="downloadChart">
+                                    <i class="fas fa-download"></i> 下载图表
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Chart Container -->
+                            <div id="chart" style="width: 100%; height: 500px;"></div>
+
+                            <!-- Data Tables -->
+                            <div v-if="activeTab === 'comparison' && comparisonResults" class="mt-4">
+                                <h5>对比结果表格</h5>
+                                <div class="table-responsive-container">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>α值</th>
+                                                <th>距离 (米)</th>
+                                                <th>总成本</th>
+                                                <th>拥堵成本</th>
+                                                <th>平均拥挤</th>
+                                                <th>节点数</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="result in comparisonResults" :key="result.alpha">
+                                                <td>{{ result.alpha }}</td>
+                                                <td>{{ result.distance.toFixed(1) }}</td>
+                                                <td>{{ result.cost.toFixed(1) }}</td>
+                                                <td>{{ result.congestionCost.toFixed(1) }}</td>
+                                                <td>{{ result.avgCongestion.toFixed(2) }}</td>
+                                                <td>{{ result.nodeCount }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Time Analysis Table -->
+                            <div v-if="activeTab === 'analysis' && analysisResults" class="mt-4">
+                                <h5>时间分析结果表格</h5>
+                                <div class="table-responsive-container">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>时间</th>
+                                                <th>距离 (米)</th>
+                                                <th>拥堵成本</th>
+                                                <th>平均拥挤系数</th>
+                                                <th>高峰期</th>
+                                                <th>节点数</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(result, index) in analysisResults" :key="index">
+                                                <td>{{ result.display_time || result.user_label || result.time_str }}</td>
+                                                <td>{{ result.path.distance.toFixed(1) }}</td>
+                                                <td>{{ result.path.congestion_cost.toFixed(1) }}</td>
+                                                <td>{{ result.path.average_congestion.toFixed(2) }}</td>
+                                                <td>
+                                                    <span v-if="result.is_peak" class="badge bg-danger">高峰期</span>
+                                                    <span v-else class="badge bg-success">平峰期</span>
+                                                </td>
+                                                <td>{{ result.path.nodes.length }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Summary Card -->
+                    <div class="card mb-4" v-if="currentPath">
+                        <div class="card-header bg-success text-white">
+                            <i class="fas fa-check-circle me-2"></i> 路径规划结果
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">{{ getNodeName(currentPath.start) }} → {{ getNodeName(currentPath.goal) }}</h6>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>实际物理距离</span>
+                                    <strong>{{ currentPath.distance.toFixed(1) }} 米</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>总成本（含拥堵惩罚）</span>
+                                    <strong>{{ currentPath.cost.toFixed(1) }}</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>拥堵惩罚成本</span>
+                                    <strong>{{ currentPath.congestionCost.toFixed(1) }}</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>平均拥挤系数</span>
+                                    <strong>{{ currentPath.avgCongestion.toFixed(2) }}</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>节点数量</span>
+                                    <strong>{{ currentPath.nodeCount }} 个</strong>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Node Sequence Panel -->
+                    <div class="card" v-if="currentPath">
+                        <div class="card-header bg-secondary text-white">
+                            <i class="fas fa-list-ol me-2"></i> 节点序列
+                        </div>
+                        <div class="card-body">
+                            <div class="path-sequence">
+                                <span v-for="(node, index) in currentPath.nodes" :key="index"
+                                      class="badge bg-primary me-2 mb-2 p-2">
+                                    {{ index + 1 }}. {{ getNodeName(node) }}
+                                    <span v-if="index < currentPath.nodes.length - 1" class="ms-1">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer mt-5 py-3 bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>FlowNav 校园动态导航系统</h6>
+                        <p class="text-muted small">解决"潮汐人流"场景下的"隐形拥堵"问题</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <p class="text-muted small">
+                            <i class="fas fa-code"></i> 算法: 动态惩罚A* + 时空规则引擎<br>
+                            <i class="fas fa-bolt"></i> 前端: Vue.js + ECharts<br>
+                            <i class="fas fa-calendar"></i> 最后更新: 2026-03-15
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Vue测试 -->
+    <div id="vue-test" style="display: none; position: fixed; top: 10px; right: 10px; background: #f8f9fa; padding: 10px; border-radius: 5px; border: 1px solid #ddd; z-index: 9999;">
+        Vue状态: <span id="vue-status">检查中...</span>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Vue加载检查 -->
+    <script>
+        (function() {
+            // 检查Vue是否加载
+            const vueTestDiv = document.getElementById('vue-test');
+            const vueStatusSpan = document.getElementById('vue-status');
+
+            if (typeof Vue === 'undefined') {
+                vueStatusSpan.textContent = '❌ Vue未加载';
+                vueStatusSpan.style.color = '#e74c3c';
+                vueTestDiv.style.display = 'block';
+                console.error('Vue.js未加载！请检查CDN链接：https://unpkg.com/vue@3/dist/vue.global.js');
+            } else {
+                vueStatusSpan.textContent = '✅ Vue已加载 (v' + Vue.version + ')';
+                vueStatusSpan.style.color = '#27ae60';
+                vueTestDiv.style.display = 'block';
+                console.log('Vue.js已加载，版本:', Vue.version);
+
+                // 3秒后隐藏测试提示
+                setTimeout(function() {
+                    vueTestDiv.style.display = 'none';
+                }, 3000);
+            }
+        })();
+    </script>
+
+    <!-- Application Scripts -->
+    <script src="mockData.js"></script>
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+
+    <!-- Vue模板解析测试 -->
+    <script>
+        // 等待主Vue应用加载
+        setTimeout(function() {
+            console.log('=== Vue模板解析测试 ===');
+
+            // 测试1: 检查Vue是否加载
+            if (typeof Vue === 'undefined') {
+                console.error('❌ 测试失败: Vue未加载');
+                return;
+            }
+            console.log('✅ Vue已加载');
+
+            // 测试2: 检查主Vue应用是否挂载
+            const appElement = document.getElementById('app');
+            if (appElement && appElement.__vue_app__) {
+                console.log('✅ 主Vue应用已挂载到#app');
+            } else {
+                console.warn('⚠️ 主Vue应用可能未挂载到#app');
+
+                // 尝试创建一个微型测试应用
+                try {
+                    const testApp = Vue.createApp({
+                        data() {
+                            return { testMessage: 'Vue测试成功!' };
+                        },
+                        template: '<div style="position:fixed;bottom:10px;right:10px;background:#27ae60;color:white;padding:10px;border-radius:5px;z-index:10000">{{ testMessage }}</div>'
+                    });
+
+                    const testDiv = document.createElement('div');
+                    testDiv.id = 'vue-test-app';
+                    document.body.appendChild(testDiv);
+                    testApp.mount('#vue-test-app');
+                    console.log('✅ 测试Vue应用创建成功');
+
+                    // 5秒后移除测试
+                    setTimeout(() => {
+                        if (document.getElementById('vue-test-app')) {
+                            document.getElementById('vue-test-app').remove();
+                        }
+                    }, 5000);
+                } catch (error) {
+                    console.error('❌ 测试Vue应用创建失败:', error);
+                }
+            }
+
+            // 测试3: 检查模板语法
+            const templateElements = document.querySelectorAll('[v-if], [v-for], [v-model]');
+            console.log(`找到 ${templateElements.length} 个Vue指令元素`);
+
+            // 测试4: 检查{{ }}语法是否被解析
+            const mustacheElements = document.querySelectorAll('*');
+            let unparsedMustache = 0;
+            mustacheElements.forEach(el => {
+                if (el.textContent && el.textContent.includes('{{') && el.textContent.includes('}}')) {
+                    console.warn(`⚠️ 发现未解析的模板语法: ${el.textContent.substring(0, 50)}...`);
+                    unparsedMustache++;
+                }
+            });
+
+            if (unparsedMustache > 0) {
+                console.error(`❌ 发现 ${unparsedMustache} 处未解析的{{ }}模板语法`);
+            } else {
+                console.log('✅ 所有{{ }}模板语法已正确解析');
+            }
+
+            console.log('=== Vue模板解析测试结束 ===');
+        }, 1000); // 等待1秒让主应用加载
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+INFO:     Started server process [41744]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+Accept failed on a socket
+socket: <asyncio.TransportSocket fd=912, family=2, type=1, proto=6, laddr=('0.0.0.0', 8000)>
+Traceback (most recent call last):
+  File "E:\software\anaconda3\Lib\asyncio\proactor_events.py", line 843, in loop
+    conn, addr = f.result()
+                 ~~~~~~~~^^
+  File "E:\software\anaconda3\Lib\asyncio\windows_events.py", line 804, in _poll
+    value = callback(transferred, key, ov)
+  File "E:\software\anaconda3\Lib\asyncio\windows_events.py", line 562, in finish_accept
+    return conn, conn.getpeername()
+                 ~~~~~~~~~~~~~~~~^^
+OSError: [WinError 10014] 系统检测到在一个调用中尝试使用指针参数时的无效指针地址。
+Task exception was never retrieved
+future: <Task finished name='Task-4' coro=<IocpProactor.accept.<locals>.accept_coro() done, defined at E:\software\anaconda3\Lib\asyncio\windows_events.py:564> exception=OSError(14, '系统检测到在一个调用中尝试使用指针参数时的无效指针地址。', None, 10014, None)>
+Traceback (most recent call last):
+  File "E:\software\anaconda3\Lib\asyncio\windows_events.py", line 567, in accept_coro
+    await future
+OSError: [WinError 10014] 系统检测到在一个调用中尝试使用指针参数时的无效指针地址。

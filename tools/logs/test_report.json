@@ -1,0 +1,405 @@
+{
+  "summary": {
+    "total_tests": 46,
+    "passed": 41,
+    "failed": 0,
+    "warnings": 0,
+    "info": {
+      "graph_info": {
+        "node_count": 25,
+        "edge_count": 28,
+        "is_connected": true,
+        "connected_components": 1,
+        "node_types": {
+          "teaching_building": 3,
+          "crossroad": 9,
+          "cafeteria": 2,
+          "dormitory": 4,
+          "library": 1,
+          "sports_field": 2,
+          "gate": 4
+        },
+        "road_types": {
+          "main_road": 29,
+          "side_road": 13,
+          "path": 14
+        }
+      },
+      "rule_engine_info": {
+        "valid": true,
+        "issues": [],
+        "peak_periods": {
+          "lunch_peak": [
+            [
+              [
+                11,
+                50
+              ],
+              [
+                12,
+                30
+              ]
+            ]
+          ],
+          "dinner_peak": [
+            [
+              [
+                17,
+                30
+              ],
+              [
+                18,
+                30
+              ]
+            ]
+          ],
+          "evening_study_peak": [
+            [
+              [
+                21,
+                30
+              ],
+              [
+                22,
+                10
+              ]
+            ]
+          ]
+        },
+        "congestion_ranges": {
+          "lunch_peak": [
+            4.0,
+            5.0
+          ],
+          "dinner_peak": [
+            4.0,
+            5.0
+          ],
+          "evening_study_peak": [
+            3.0,
+            4.0
+          ],
+          "off_peak": [
+            1.0,
+            1.0
+          ]
+        },
+        "area_mapping": {
+          "cafeteria_area": [
+            "lunch_peak",
+            "dinner_peak"
+          ],
+          "teaching_to_cafeteria": [
+            "lunch_peak",
+            "dinner_peak"
+          ],
+          "dormitory_area": [
+            "evening_study_peak"
+          ],
+          "library_to_dormitory": [
+            "evening_study_peak"
+          ],
+          "teaching_to_dormitory": [
+            "evening_study_peak"
+          ]
+        }
+      },
+      "key_nodes": {
+        "teaching_buildings": [],
+        "cafeterias": [],
+        "dormitories": [],
+        "libraries": []
+      },
+      "algorithm_info": {
+        "name": "动态惩罚A*算法",
+        "formula": "g_new(e) = d(e) × [1 + α × (C(e,t) - 1)]",
+        "description": "考虑时间相关拥挤成本和用户偏好权重的改进A*算法"
+      }
+    },
+    "pass_rate": 89.13043478260869,
+    "start_time": "2026-03-16T05:45:30.699021",
+    "end_time": "2026-03-16T05:45:30.703875",
+    "duration_seconds": 0.004854,
+    "bug_count": 0
+  },
+  "bugs": [],
+  "failed_tests": [],
+  "all_tests": [
+    {
+      "test_name": "校园节点数量",
+      "status": "PASS",
+      "details": "节点数: 25",
+      "timestamp": "2026-03-16T05:45:30.699592"
+    },
+    {
+      "test_name": "校园边数量",
+      "status": "PASS",
+      "details": "边数: 28",
+      "timestamp": "2026-03-16T05:45:30.699605"
+    },
+    {
+      "test_name": "图连通性",
+      "status": "PASS",
+      "details": "图是连通的",
+      "timestamp": "2026-03-16T05:45:30.699610"
+    },
+    {
+      "test_name": "规则引擎有效性",
+      "status": "PASS",
+      "details": "规则引擎有效",
+      "timestamp": "2026-03-16T05:45:30.699613"
+    },
+    {
+      "test_name": "关键节点-teaching_buildings",
+      "status": "INFO",
+      "details": "未找到 teaching_buildings 节点（可能是API变更）",
+      "timestamp": "2026-03-16T05:45:30.699618"
+    },
+    {
+      "test_name": "关键节点-cafeterias",
+      "status": "INFO",
+      "details": "未找到 cafeterias 节点（可能是API变更）",
+      "timestamp": "2026-03-16T05:45:30.701314"
+    },
+    {
+      "test_name": "关键节点-dormitories",
+      "status": "INFO",
+      "details": "未找到 dormitories 节点（可能是API变更）",
+      "timestamp": "2026-03-16T05:45:30.701323"
+    },
+    {
+      "test_name": "关键节点-libraries",
+      "status": "INFO",
+      "details": "未找到 libraries 节点（可能是API变更）",
+      "timestamp": "2026-03-16T05:45:30.701326"
+    },
+    {
+      "test_name": "规则引擎-平峰期",
+      "status": "PASS",
+      "details": "平峰期检测正确: 拥挤系数: 1.00",
+      "timestamp": "2026-03-16T05:45:30.701377"
+    },
+    {
+      "test_name": "规则引擎-午餐高峰期",
+      "status": "PASS",
+      "details": "高峰期检测正确: lunch_peak, 拥挤系数: 4.60",
+      "timestamp": "2026-03-16T05:45:30.701407"
+    },
+    {
+      "test_name": "规则引擎-晚餐高峰期",
+      "status": "PASS",
+      "details": "高峰期检测正确: dinner_peak, 拥挤系数: 4.00",
+      "timestamp": "2026-03-16T05:45:30.701428"
+    },
+    {
+      "test_name": "规则引擎-晚自习高峰期",
+      "status": "PASS",
+      "details": "高峰期检测正确: evening_study_peak, 拥挤系数: 3.30",
+      "timestamp": "2026-03-16T05:45:30.701444"
+    },
+    {
+      "test_name": "算法自验证",
+      "status": "PASS",
+      "details": "算法自验证通过",
+      "timestamp": "2026-03-16T05:45:30.702612"
+    },
+    {
+      "test_name": "最短路径计算",
+      "status": "INFO",
+      "details": "图没有find_shortest_path方法（可能是预期行为）",
+      "timestamp": "2026-03-16T05:45:30.702621"
+    },
+    {
+      "test_name": "路径规划-TB1→CA1-起点",
+      "status": "PASS",
+      "details": "起点正确",
+      "timestamp": "2026-03-16T05:45:30.702722"
+    },
+    {
+      "test_name": "路径规划-TB1→CA1-终点",
+      "status": "PASS",
+      "details": "终点正确",
+      "timestamp": "2026-03-16T05:45:30.702861"
+    },
+    {
+      "test_name": "路径规划-TB1→CA1-距离",
+      "status": "PASS",
+      "details": "距离: 485.0m",
+      "timestamp": "2026-03-16T05:45:30.702868"
+    },
+    {
+      "test_name": "路径规划-TB1→CA1-成本",
+      "status": "PASS",
+      "details": "成本合理: 580.0",
+      "timestamp": "2026-03-16T05:45:30.702872"
+    },
+    {
+      "test_name": "路径规划-TB1→CA1",
+      "status": "PASS",
+      "details": "午餐高峰期, 6节点, 485.0m",
+      "timestamp": "2026-03-16T05:45:30.702876"
+    },
+    {
+      "test_name": "路径规划-LIB→DO1-起点",
+      "status": "PASS",
+      "details": "起点正确",
+      "timestamp": "2026-03-16T05:45:30.703087"
+    },
+    {
+      "test_name": "路径规划-LIB→DO1-终点",
+      "status": "PASS",
+      "details": "终点正确",
+      "timestamp": "2026-03-16T05:45:30.703091"
+    },
+    {
+      "test_name": "路径规划-LIB→DO1-距离",
+      "status": "PASS",
+      "details": "距离: 1020.0m",
+      "timestamp": "2026-03-16T05:45:30.703095"
+    },
+    {
+      "test_name": "路径规划-LIB→DO1-成本",
+      "status": "PASS",
+      "details": "成本合理: 1272.0",
+      "timestamp": "2026-03-16T05:45:30.703098"
+    },
+    {
+      "test_name": "路径规划-LIB→DO1",
+      "status": "PASS",
+      "details": "晚自习高峰期, 9节点, 1020.0m",
+      "timestamp": "2026-03-16T05:45:30.703102"
+    },
+    {
+      "test_name": "路径规划-TB1→CA1-起点",
+      "status": "PASS",
+      "details": "起点正确",
+      "timestamp": "2026-03-16T05:45:30.703173"
+    },
+    {
+      "test_name": "路径规划-TB1→CA1-终点",
+      "status": "PASS",
+      "details": "终点正确",
+      "timestamp": "2026-03-16T05:45:30.703177"
+    },
+    {
+      "test_name": "路径规划-TB1→CA1-距离",
+      "status": "PASS",
+      "details": "距离: 385.0m",
+      "timestamp": "2026-03-16T05:45:30.703181"
+    },
+    {
+      "test_name": "路径规划-TB1→CA1-成本",
+      "status": "PASS",
+      "details": "成本合理: 385.0",
+      "timestamp": "2026-03-16T05:45:30.703183"
+    },
+    {
+      "test_name": "路径规划-TB1→CA1",
+      "status": "PASS",
+      "details": "平峰期, 6节点, 385.0m",
+      "timestamp": "2026-03-16T05:45:30.703187"
+    },
+    {
+      "test_name": "α=0路径规划",
+      "status": "PASS",
+      "details": "距离: 385.0m, 成本: 385.0",
+      "timestamp": "2026-03-16T05:45:30.703257"
+    },
+    {
+      "test_name": "α=0.5路径规划",
+      "status": "PASS",
+      "details": "距离: 485.0m, 成本: 535.0",
+      "timestamp": "2026-03-16T05:45:30.703344"
+    },
+    {
+      "test_name": "α=1.0路径规划",
+      "status": "PASS",
+      "details": "距离: 485.0m, 成本: 580.0",
+      "timestamp": "2026-03-16T05:45:30.703351"
+    },
+    {
+      "test_name": "α=1.5路径规划",
+      "status": "PASS",
+      "details": "距离: 485.0m, 成本: 627.5",
+      "timestamp": "2026-03-16T05:45:30.703432"
+    },
+    {
+      "test_name": "α=2.0路径规划",
+      "status": "PASS",
+      "details": "距离: 485.0m, 成本: 645.0",
+      "timestamp": "2026-03-16T05:45:30.703516"
+    },
+    {
+      "test_name": "α=0距离最短",
+      "status": "PASS",
+      "details": "α=0时返回最短距离路径",
+      "timestamp": "2026-03-16T05:45:30.703523"
+    },
+    {
+      "test_name": "α对拥堵成本影响",
+      "status": "PASS",
+      "details": "拥堵成本: 50.0 → 160.0",
+      "timestamp": "2026-03-16T05:45:30.703533"
+    },
+    {
+      "test_name": "时间敏感性-平峰期",
+      "status": "PASS",
+      "details": "距离: 550.0m, 拥堵成本: 0.0",
+      "timestamp": "2026-03-16T05:45:30.703644"
+    },
+    {
+      "test_name": "时间敏感性-午餐高峰期",
+      "status": "PASS",
+      "details": "距离: 550.0m, 拥堵成本: 0.0",
+      "timestamp": "2026-03-16T05:45:30.703716"
+    },
+    {
+      "test_name": "时间敏感性-晚自习高峰期",
+      "status": "PASS",
+      "details": "距离: 1020.0m, 拥堵成本: 252.0",
+      "timestamp": "2026-03-16T05:45:30.703723"
+    },
+    {
+      "test_name": "时间敏感性-路径变化",
+      "status": "PASS",
+      "details": "不同时间点路径不同: 发现 2 种不同路径",
+      "timestamp": "2026-03-16T05:45:30.703726"
+    },
+    {
+      "test_name": "错误处理-无效节点",
+      "status": "PASS",
+      "details": "正确处理无效节点",
+      "timestamp": "2026-03-16T05:45:30.703740"
+    },
+    {
+      "test_name": "错误处理-负α值",
+      "status": "PASS",
+      "details": "正确处理负α值",
+      "timestamp": "2026-03-16T05:45:30.703748"
+    },
+    {
+      "test_name": "路径比较功能",
+      "status": "PASS",
+      "details": "比较 3 条路径",
+      "timestamp": "2026-03-16T05:45:30.703764"
+    },
+    {
+      "test_name": "路径详情获取",
+      "status": "PASS",
+      "details": "成功获取路径详情",
+      "timestamp": "2026-03-16T05:45:30.703806"
+    },
+    {
+      "test_name": "文本报告导出",
+      "status": "PASS",
+      "details": "报告长度: 762 字符",
+      "timestamp": "2026-03-16T05:45:30.703863"
+    },
+    {
+      "test_name": "缓存功能",
+      "status": "PASS",
+      "details": "缓存功能正常",
+      "timestamp": "2026-03-16T05:45:30.703870"
+    }
+  ]
+}
